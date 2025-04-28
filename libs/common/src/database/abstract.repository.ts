@@ -1,6 +1,6 @@
-import { FilterQuery, Model, Types } from "mongoose";
+import { FilterQuery, Model, Types, UpdateQuery } from "mongoose";
 import { AbstractDocument } from "./abstract.schema";
-import { Logger } from "@nestjs/common";
+import { Logger, NotFoundException } from "@nestjs/common";
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   protected abstract readonly logger: Logger;
@@ -27,9 +27,61 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       this.logger.warn(
         `Document not found for query: ${JSON.stringify(filterQuery)}`,
       );
-      return null;
+      throw new NotFoundException("Document not found");
     }
 
+    return document as TDocument;
+  }
+
+  async update(
+    filterQuery: FilterQuery<TDocument>,
+    update: Partial<TDocument>,
+  ): Promise<TDocument | null> {
+    const document = await this.model
+      .findOneAndUpdate(filterQuery, update, {
+        new: true,
+      })
+      .lean<TDocument>(true);
+
+    if (!document) {
+      this.logger.warn(
+        `Document not found for query: ${JSON.stringify(filterQuery)}`,
+      );
+      throw new NotFoundException("Document not found");
+    }
+
+    return document as TDocument;
+  }
+  async find(filterQuery: FilterQuery<TDocument>): Promise<TDocument[]> {
+    return await this.model.find(filterQuery).lean<TDocument[]>(true);
+  }
+
+  async findOneAndUpdate(
+    filterQuery: FilterQuery<TDocument>,
+    update: UpdateQuery<TDocument>,
+  ): Promise<TDocument | null> {
+    const document = await this.model.findOneAndUpdate(filterQuery, update, {
+      new: true,
+    });
+    if (!document) {
+      this.logger.warn(
+        `Document not found for query: ${JSON.stringify(filterQuery)}`,
+      );
+      throw new NotFoundException("Document not found");
+    }
+    return document as TDocument;
+  }
+
+  async findOneAndDelete(
+    filterQuery: FilterQuery<TDocument>,
+  ): Promise<TDocument | null> {
+    const document = await this.model.findOneAndDelete(filterQuery);
+    if (!document) {
+      this.logger.warn(
+        `Document not found for query: ${JSON.stringify(filterQuery)}`,
+      );
+      throw new NotFoundException("Document not found");
+    }
     return document as TDocument;
   }
 }
