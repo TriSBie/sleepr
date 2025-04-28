@@ -17,6 +17,6 @@ import { ConfigModule } from "../config/config.module";
 })
 export class DatabaseModule {
   static forFeature(models: ModelDefinition[]) {
-    return MongooseModule.forFeature(models);
+    return MongooseModule.forFeature(models); // forFeature is a method that allows you to define models for the current module
   }
 }
