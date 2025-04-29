@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { ReservationsModule } from "./reservations.module";
 import { ValidationPipe } from "@nestjs/common";
 import { Logger } from "nestjs-pino";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(ReservationsModule);
@@ -12,9 +13,11 @@ async function bootstrap() {
     }),
   ); // Enable validation for incoming requests
   app.useLogger(app.get(Logger));
-  await app.listen(process.env.port ?? 3000, () => {
+  const configService = app.get(ConfigService);
+
+  await app.listen(configService.get("PORT") ?? 3000, () => {
     console.log(
-      `Reservations service is running on: http://localhost:${process.env.port ?? 3000}`,
+      `Reservations service is running on: http://localhost:${configService.get("PORT") ?? 3000}`,
     );
   });
 }

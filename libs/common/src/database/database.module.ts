@@ -1,11 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ModelDefinition, MongooseModule } from "@nestjs/mongoose";
-import { ConfigModule } from "../config/config.module";
 
 @Module({
   imports: [
-    ConfigModule,
     MongooseModule.forRootAsync({
       // useFactory is a function that returns a promise
       useFactory: (configService: ConfigService) => ({
