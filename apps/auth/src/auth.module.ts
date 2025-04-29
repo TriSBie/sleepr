@@ -6,6 +6,7 @@ import * as Joi from "joi"; // Joi is a validation library for JavaScript and Ty
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { UsersModule } from "./users/users.module";
+import { LocalStrategy } from "./strategies/local.strategy";
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { UsersModule } from "./users/users.module";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy], // placed to stored the injectable class
 })
 export class AuthModule {}

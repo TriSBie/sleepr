@@ -16,9 +16,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     return (await createdDocument.save()).toJSON() as unknown as TDocument;
   }
 
-  async findOne(
-    filterQuery: FilterQuery<TDocument>,
-  ): Promise<TDocument | null> {
+  async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
     // using lean() to get a plain JavaScript object instead of a Mongoose document
     const document = await this.model
       .findOne(filterQuery)

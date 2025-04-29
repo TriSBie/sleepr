@@ -19,5 +19,6 @@ import { UserRepository } from "./user.repository";
   ],
   controllers: [UsersController],
   providers: [UsersService, UserRepository], // which services, repositories, or helpers should be created and available for this module
+  exports: [UsersService], // which services, repositories, or helpers should be available for other modules to use
 })
 export class UsersModule {}
