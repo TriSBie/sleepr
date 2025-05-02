@@ -5,8 +5,9 @@ import { JwtModule } from "@nestjs/jwt";
 import * as Joi from "joi"; // Joi is a validation library for JavaScript and TypeScript
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { UsersModule } from "./users/users.module";
+import { JwtStrategy } from "./strategies/jwt-strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { LocalStrategy } from "./strategies/local.strategy";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy], // placed to stored the injectable class
+  providers: [AuthService, LocalStrategy, JwtStrategy], // placed to stored the injectable class
 })
 export class AuthModule {}

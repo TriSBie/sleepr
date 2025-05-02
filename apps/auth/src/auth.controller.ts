@@ -4,12 +4,12 @@ import { CurrentUser } from "./decorators/curren-user-decorator";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { UserDocument } from "./users/models/users.schema";
 import { Response } from "express";
-@Controller()
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post("login")
   @UseGuards(LocalAuthGuard) // Use LocalAuthGuard to protect this route
+  @Post("login")
   async login(
     @CurrentUser() user: UserDocument,
     @Res({ passthrough: true }) res: Response, // passthrough: true allows you to modify the response object without NestJS interfering with it
