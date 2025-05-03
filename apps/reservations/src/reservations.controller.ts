@@ -18,6 +18,12 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @UseGuards(JWTAuthGuard)
+  @Get()
+  async findAll() {
+    return this.reservationsService.findAll();
+  }
+
+  @UseGuards(JWTAuthGuard)
   @Post()
   async create(
     @Body() createReservationDto: CreateReservationDto,
@@ -29,12 +35,6 @@ export class ReservationsController {
       },
       user,
     );
-  }
-
-  @UseGuards(JWTAuthGuard)
-  @Get()
-  async findAll() {
-    return this.reservationsService.findAll();
   }
 
   @Get(":id")

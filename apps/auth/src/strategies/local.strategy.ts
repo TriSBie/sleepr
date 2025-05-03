@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, "local") {
         throw new UnauthorizedException("Invalid credentials"); // throw exception if user not found
       }
       // Passport will automatically attach the user object to the request object
-      return user; // user found, return user object
+      return user;
     } catch (error) {
       throw new UnauthorizedException(error); // throw exception if user not found
     }
