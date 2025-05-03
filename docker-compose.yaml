@@ -29,6 +29,19 @@ services:
       - ./apps/auth/.env
     depends_on:
       - mongo
+  payments:
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+      target: development
+    command: pnpm run start:dev payments
+    ports: 
+      - "3003:3003"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - ./apps/payments/.env
   mongo:
     image: mongo:latest
     container_name: mongo
