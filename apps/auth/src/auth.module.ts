@@ -30,7 +30,8 @@ import { UsersModule } from "./users/users.module";
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(), // JWT_SECRET is required
         JWT_EXPIRATION: Joi.number().default(3600), // default to 1 hour
-        PORT: Joi.number().required(), // required to xxxx
+        TCP_PORT: Joi.number().required(), // required to xxxx\
+        HTTP_PORT: Joi.number().required(), // required to xxxx
       }),
     }),
   ],

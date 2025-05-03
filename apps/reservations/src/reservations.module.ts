@@ -1,5 +1,9 @@
-import { DatabaseModule } from "@app/common";
+import { AUTH_SERVICE, DatabaseModule } from "@app/common";
+import { LoggerModule } from "@app/common/logger";
 import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import * as Joi from "joi";
 import {
   ReservationDocument,
   ReservationSchema,
@@ -7,9 +11,6 @@ import {
 import { ReservationsController } from "./reservations.controller";
 import { ReservationsRepository } from "./reservations.repository";
 import { ReservationsService } from "./reservations.service";
-import { LoggerModule } from "@app/common/logger";
-import { ConfigModule } from "@nestjs/config";
-import * as Joi from "joi";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import * as Joi from "joi";
       },
     ]),
     LoggerModule,
+    // forRoot is a method that allows you to load environment variables from a .env file
     ConfigModule.forRoot({
       isGlobal: true, // make the environment variables available globally
       envFilePath: "./apps/reservations/.env", // load environment variables from .env file
@@ -28,7 +30,20 @@ import * as Joi from "joi";
         MONGODB_URI: Joi.string().required(), // MONGODB_URI is required
         PORT: Joi.number().required(), // required to 3000
       }),
-    }), // forRoot is a method that allows you to load environment variables from a .env file
+    }),
+    ClientsModule.registerAsync([
+      {
+        name: AUTH_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get("AUTH_HOST"),
+            port: configService.get("AUTH_PORT"),
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [ReservationsController],
   providers: [ReservationsService, ReservationsRepository], // which services, repositories, or helpers should be created and available for this module

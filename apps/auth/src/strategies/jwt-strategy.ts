@@ -9,17 +9,21 @@ import { UsersService } from "../users/users.service";
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
     private readonly userService: UsersService,
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
     const jwtSecret = configService.get("JWT_SECRET");
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: any) => request?.cookies?.Authentication,
+        (request: any) =>
+          request?.cookies?.Authentication ||
+          request?.Authentication ||
+          request?.headers.Authentication,
       ]),
       secretOrKey: jwtSecret,
     });
   }
 
+  // Run after the token is validated
   async validate({ userId }: TokenPayload) {
     return await this.userService.findOne({ _id: userId });
   }
