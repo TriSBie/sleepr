@@ -81,6 +81,6 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       );
       throw new NotFoundException("Document not found");
     }
-    return document as TDocument;
+    return document as unknown as TDocument;
   }
 }

@@ -28,6 +28,7 @@ async function bootstrap() {
   // ✅ Start microservices before starting HTTP app
   await app.startAllMicroservices();
   await app.listen(configService.get("HTTP_PORT") ?? 3001, () => {
+    // Start HTTP server
     console.log(`Auth service is running on: ${process.env.port ?? 3001}`);
   });
 }

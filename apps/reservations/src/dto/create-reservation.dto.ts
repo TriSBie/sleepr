@@ -29,5 +29,6 @@ export class CreateReservationDto {
   @IsDefined() // This field is required
   @IsNotEmptyObject() // This field cannot be an empty object
   @ValidateNested() // This field must be a nested object
+  @Type(() => CreateChargeDto) // This field must be of type CreateChargeDto
   charge: CreateChargeDto;
 }
