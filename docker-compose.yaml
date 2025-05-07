@@ -5,7 +5,7 @@ services:
       dockerfile: ./apps/reservations/Dockerfile
       target: development
     command: pnpm run start:dev reservations
-    ports: 
+    ports:
       - "3000:3000"
     env_file:
       - ./apps/reservations/.env
@@ -20,7 +20,7 @@ services:
       dockerfile: ./apps/auth/Dockerfile
       target: development
     command: pnpm run start:dev auth
-    ports: 
+    ports:
       - "3001:3001"
     volumes:
       - .:/usr/src/app
@@ -35,7 +35,7 @@ services:
       dockerfile: ./apps/payments/Dockerfile
       target: development
     command: pnpm run start:dev payments
-    ports: 
+    ports:
       - "3003:3003"
     volumes:
       - .:/usr/src/app
@@ -44,10 +44,23 @@ services:
       - ./apps/payments/.env
     depends_on:
       - mongo
+  notifications:
+    build:
+      context: .
+      dockerfile: ./apps/notifications/Dockerfile
+      target: development
+    command: pnpm run start:dev notifications
+    ports:
+      - "3004:3004"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - ./apps/notifications/.env
+    depends_on:
+      - mongo
   mongo:
     image: mongo:latest
     container_name: mongo
     ports:
       - "27017:27017"
-
-  
