@@ -47,4 +47,19 @@ export class UsersService {
       _id,
     });
   }
+
+  async delete(_id: string) {
+    return this.userRepository.findOneAndDelete({ _id }); // delete the user
+  }
+
+  async update(_id: string, updateUserDto: CreateUserDto) {
+    await this.validCreateUserDTO(updateUserDto); // validate the user DTO
+    return this.userRepository.findOneAndUpdate(
+      { _id },
+      {
+        ...updateUserDto,
+        password: await bcrypt.hash(updateUserDto.password, 10), // hash the password before saving it
+      },
+    );
+  }
 }

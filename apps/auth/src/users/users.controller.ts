@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { CurrentUser } from "../decorators/curren-user-decorator";
+import { Body, Controller, Delete, Get, Post, UseGuards } from "@nestjs/common";
+import { CurrentUser } from "../decorators/current-user-decorator";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UserDocument } from "../../../../libs/common/src/models/users.schema";
 import { UsersService } from "./users.service";
 import { JwtAuthGuards } from "../guards/jwt-auth.guard";
+import { Roles } from "../decorators";
 
 @Controller("users")
 export class UsersController {
@@ -18,5 +19,11 @@ export class UsersController {
   @Post()
   createUser(@Body() createUser: CreateUserDto) {
     return this.userService.create(createUser);
+  }
+
+  @Delete(":id")
+  @UseGuards(JwtAuthGuards)
+  async deleteUser(@CurrentUser() user: UserDocument) {
+    return this.userService.delete(user._id);
   }
 }
