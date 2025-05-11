@@ -37,8 +37,6 @@ export class PaymentsService {
       },
     });
 
-    console.log("🚀 ~ PaymentsService ~ createCharge ~ email:", email);
-
     this.notificationsService.emit("notify_email", {
       email,
     });

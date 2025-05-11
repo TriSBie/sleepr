@@ -1,5 +1,10 @@
 import { Controller, UsePipes, ValidationPipe } from "@nestjs/common";
-import { MessagePattern, Payload } from "@nestjs/microservices";
+import {
+  Ctx,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from "@nestjs/microservices";
 import { PaymentsService } from "./payments.service";
 import { PaymentsCreateChargeDto } from "../dto/payments-create-charge.dto";
 
@@ -12,8 +17,15 @@ export class PaymentsController {
     new ValidationPipe({
       transform: true, // Automatically transform payloads to DTO instances
     }),
-  ) // Use the ValidationPipe to validate incoming data
-  async createCharge(@Payload() data: PaymentsCreateChargeDto) {
+  )
+  async createCharge(
+    @Payload() data: PaymentsCreateChargeDto,
+    @Ctx() context: RmqContext,
+  ) {
+    const channel = context.getChannelRef();
+    const originalMessage = context.getMessage();
+    channel.ack(originalMessage); // Acknowledge the message
+    throw new Error("Not implemented yet");
     return this.paymentsService.createCharge(data);
   }
 }

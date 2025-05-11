@@ -65,3 +65,7 @@ services:
     container_name: mongo
     ports:
       - "27017:27017"
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"

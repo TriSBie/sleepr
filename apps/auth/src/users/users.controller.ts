@@ -4,7 +4,6 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UserDocument } from "../../../../libs/common/src/models/users.schema";
 import { UsersService } from "./users.service";
 import { JwtAuthGuards } from "../guards/jwt-auth.guard";
-import { Roles } from "../decorators";
 
 @Controller("users")
 export class UsersController {

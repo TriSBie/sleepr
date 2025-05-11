@@ -11,10 +11,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.connectMicroservice({
-    transport: Transport.TCP, // Use TCP transport
+    transport: Transport.RMQ, // Use RMQ transport
     options: {
-      host: "0.0.0.0", // Listen on all interfaces
-      port: configService.get("TCP_PORT"), // Port for the microservice
+      urls: [configService.get("RABBITMQ_URI")], // RabbitMQ URI from environment variables
+      queue: "auth",
     },
   });
   app.use(cookieParser()); // Use cookie parser middleware to parse cookies in requests

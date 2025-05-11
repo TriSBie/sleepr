@@ -9,10 +9,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.connectMicroservice({
-    transport: Transport.TCP,
+    transport: Transport.RMQ, // Use RMQ transport
     options: {
-      host: "0.0.0.0",
-      port: configService.get("PORT"),
+      urls: [configService.get("RABBITMQ_URI")], // RabbitMQ URI from environment variables
+      queue: "notifications",
     },
   });
   app.useLogger(app.get(Logger));
