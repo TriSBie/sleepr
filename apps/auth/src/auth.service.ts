@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { UserDocument } from "../../../libs/common/src/models/users.schema";
 import { Response } from "express";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { TokenPayload } from "./interfaces/token-payload.interface";
+import { User } from "@app/common/models";
 
 @Injectable()
 export class AuthService {
@@ -12,9 +12,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(user: UserDocument, response: Response) {
+  async login(user: User, response: Response) {
     const tokenPayload: TokenPayload = {
-      userId: user._id,
+      userId: user.id,
     };
 
     const JWT_EXPIRATION = this.configService.get("JWT_EXPIRATION") as number;

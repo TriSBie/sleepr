@@ -5,6 +5,7 @@ import { CreateReservationDto } from "./dto/create-reservation.dto";
 import { UpdateReservationDto } from "./dto/update-reservation.dto";
 import { ReservationsRepository } from "./reservations.repository";
 import { map } from "rxjs";
+import { Reservation } from "./models/reservations.entity";
 
 @Injectable()
 export class ReservationsService {
@@ -25,12 +26,16 @@ export class ReservationsService {
       })
       .pipe(
         map((res) => {
-          return this.reservationRepository.create({
+          // Create a new reservation with the charge ID and user ID
+          const reservation = new Reservation({
             ...createReservationDto,
             timestamp: new Date(),
             invoiceId: res.id,
             userId,
           });
+
+          // Save the reservation to the database
+          return this.reservationRepository.create(reservation);
         }),
       );
   }
@@ -39,22 +44,20 @@ export class ReservationsService {
     return this.reservationRepository.find({});
   }
 
-  async findOne(id: string) {
-    return this.reservationRepository.findOne({ _id: id });
+  async findOne(id: number) {
+    return this.reservationRepository.findOne({
+      id,
+    });
   }
 
-  async update(id: string, updateReservationDto: UpdateReservationDto) {
+  async update(id: number, updateReservationDto: UpdateReservationDto) {
     return this.reservationRepository.findOneAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          ...updateReservationDto,
-        },
-      },
+      { id },
+      updateReservationDto,
     );
   }
 
-  async remove(id: string) {
-    return this.reservationRepository.findOneAndDelete({ _id: id });
+  async remove(id: number) {
+    return this.reservationRepository.findOneAndDelete({ id });
   }
 }

@@ -1,6 +1,9 @@
-import { IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class GetUserDTO {
   @IsString()
-  _id: string;
+  @IsNotEmpty()
+  @Type(() => Number)
+  _id: number;
 }

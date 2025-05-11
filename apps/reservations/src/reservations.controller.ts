@@ -1,4 +1,4 @@
-import { CurrentUser, JWTAuthGuard, UserDto } from "@app/common";
+import { CurrentUser, JWTAuthGuard, Roles, UserDto } from "@app/common";
 import {
   Body,
   Controller,
@@ -12,7 +12,6 @@ import {
 import { CreateReservationDto } from "./dto/create-reservation.dto";
 import { UpdateReservationDto } from "./dto/update-reservation.dto";
 import { ReservationsService } from "./reservations.service";
-import { Roles } from "apps/auth/src/decorators";
 
 @Controller("reservations")
 export class ReservationsController {
@@ -39,13 +38,13 @@ export class ReservationsController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string) {
+  async findOne(@Param("id") id: number) {
     return this.reservationsService.findOne(id);
   }
 
   @Patch(":id")
   async update(
-    @Param("id") id: string,
+    @Param("id") id: number,
     @Body() updateReservationDto: UpdateReservationDto,
   ) {
     return this.reservationsService.update(id, updateReservationDto);
@@ -54,7 +53,7 @@ export class ReservationsController {
   @Delete(":id")
   @UseGuards(JWTAuthGuard)
   @Roles("Admin")
-  async remove(@Param("id") id: string) {
+  async remove(@Param("id") id: number) {
     return this.reservationsService.remove(id);
   }
 }

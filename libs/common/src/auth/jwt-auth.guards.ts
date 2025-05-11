@@ -6,12 +6,11 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import { ClientProxy } from "@nestjs/microservices";
 import { catchError, map, Observable, of, tap } from "rxjs";
 import { AUTH_SERVICE } from "../constants";
 import { UserDto } from "../dto";
-import { Reflector } from "@nestjs/core";
-import { UserDocument } from "../models/users.schema";
 
 @Injectable()
 export class JWTAuthGuard implements CanActivate {
@@ -42,7 +41,7 @@ export class JWTAuthGuard implements CanActivate {
         Authentication: jwt,
       })
       .pipe(
-        tap((response: UserDocument) => {
+        tap((response) => {
           // tap operator is used to perform side effects, such as logging or modifying the request object
           if (roles) {
             for (const role of roles) {

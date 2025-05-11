@@ -4,8 +4,8 @@ import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { CurrentUser } from "./decorators/current-user-decorator";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { UserDocument } from "../../../libs/common/src/models/users.schema";
 import { JwtAuthGuards } from "./guards/jwt-auth.guard";
+import { User } from "@app/common/models";
 
 @Controller("auth")
 export class AuthController {
@@ -14,7 +14,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard) // Use LocalAuthGuard to protect this route
   @Post("login")
   async login(
-    @CurrentUser() user: UserDocument,
+    @CurrentUser() user: User,
     @Res({ passthrough: true }) res: Response, // passthrough: true allows you to modify the response object without NestJS interfering with it
   ) {
     const jwt = await this.authService.login(user, res); // Generate JWT token for the user
