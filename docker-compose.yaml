@@ -1,20 +1,16 @@
 services:
-  reservations:
-    build:
-      context: .
-      dockerfile: ./apps/reservations/Dockerfile
-      target: development
-    command: pnpm run start:debug reservations
-    ports:
-      - "3000:3000"
-      - "9929:9929"
+  mysql:
+    image: mysql:latest
     env_file:
-      - ./apps/reservations/.env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - mongo
+      - .env
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pkrissbui123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s # Allow MySQL time to initialize
   auth:
     build:
       context: .
@@ -24,12 +20,32 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - .:/usr/src/app
+      - ./apps/auth:/usr/src/app/apps/auth
+      - ./libs:/usr/src/app/libs
       - /usr/src/app/node_modules
     env_file:
       - ./apps/auth/.env
     depends_on:
-      - mongo
+      mysql:
+        condition: service_healthy # Wait for MySQL to be healthy
+  reservations:
+    build:
+      context: .
+      dockerfile: ./apps/reservations/Dockerfile
+      target: development
+    command: pnpm run start:dev reservations
+    ports:
+      - "3000:3000"
+      - "9929:9929"
+    env_file:
+      - ./apps/reservations/.env
+    volumes:
+      - ./apps/reservations:/usr/src/app/apps/reservations
+      - ./libs:/usr/src/app/libs
+      - /usr/src/app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
   payments:
     build:
       context: .
@@ -39,12 +55,14 @@ services:
     ports:
       - "3003:3003"
     volumes:
-      - .:/usr/src/app
+      - ./apps/payments:/usr/src/app/apps/payments
+      - ./libs:/usr/src/app/libs
       - /usr/src/app/node_modules
     env_file:
       - ./apps/payments/.env
     depends_on:
-      - mongo
+      mysql:
+        condition: service_healthy
   notifications:
     build:
       context: .
@@ -54,14 +72,11 @@ services:
     ports:
       - "3004:3004"
     volumes:
-      - .:/usr/src/app
+      - ./apps/notifications:/usr/src/app/apps/notifications
+      - ./libs:/usr/src/app/libs
       - /usr/src/app/node_modules
     env_file:
       - ./apps/notifications/.env
     depends_on:
-      - mongo
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    ports:
-      - "27017:27017"
+      mysql:
+        condition: service_healthy
