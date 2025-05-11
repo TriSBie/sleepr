@@ -16,7 +16,7 @@ export class ReservationsService {
 
   async create(
     createReservationDto: CreateReservationDto,
-    { email, _id: userId }: UserDto,
+    { email, id: userId }: UserDto,
   ) {
     // Call the payments service to create a charge
     return this.paymentsService
